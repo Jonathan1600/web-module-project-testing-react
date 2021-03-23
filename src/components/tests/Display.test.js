@@ -1,5 +1,59 @@
+import React from 'react';
+import { getByTestId, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import fetchShow from "../../api/fetchShow"
+
+import Display from "../Display"
+import Show from '../Show';
+
+jest.mock("../../api/fetchShow")
 
 
+test("renders without error", () => {
+    render(<Display />)
+});
+
+const mockData = {
+
+    //add in approprate test data structure here.
+    image: {
+        medium: "",
+        original: ""
+    },
+    name: "Stranger Things",
+    seasons: [
+        { id: 0, name: "Season 1", episodes: [] },
+        { id: 1, name: "Season 2", episodes: [] },
+        { id: 2, name: "Season 3", episodes: [] },
+        { id: 3, name: "Season 4", episodes: [] },
+        { id: 4, name: "Season 5", episodes: [] }
+    ],
+    summary: "Great Show"
+
+};
+
+test("fetch", async () => {
+    fetchShow.mockResolvedValueOnce(mockData)
+    render(<Display />)
+
+    const button = screen.getByRole('button')
+    userEvent.click(button)
+
+    await waitFor(() => expect(screen.getByTestId('show-container')).toBeTruthy());
+
+
+});
+
+test("fetch", async () => {
+    fetchShow.mockResolvedValueOnce(mockData)
+    render(<Display />)
+    const button = screen.getByRole('button')
+    userEvent.click(button)
+    const seasonLength = mockData.seasons.length;
+    await waitFor(() => expect(screen.getAllByTestId("season-option")).toHaveLength(seasonLength));
+
+
+});
 
 
 
